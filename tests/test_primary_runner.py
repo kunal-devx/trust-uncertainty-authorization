@@ -130,6 +130,30 @@ def test_mismatched_calibration_seeds_are_rejected():
         validate_cached_calibration(calibration, config)
 
 
+def test_missing_target_record_is_detected():
+    config = tiny_config()
+    calibration = calibrate_targets(config)
+    calibration["rows"] = [
+        row for row in calibration["rows"]
+        if not (row["method"] == "B2" and row["target_haer"] == 0.10)
+    ]
+    with pytest.raises(ValueError, match="exactly one calibration row"):
+        from experiments.run_primary import _calibration_row
+        _calibration_row(calibration, "B2", 0.10)
+
+
+def test_missing_method_record_is_detected():
+    config = tiny_config()
+    calibration = calibrate_targets(config)
+    calibration["rows"] = [
+        row for row in calibration["rows"]
+        if row["method"] != "B1"
+    ]
+    with pytest.raises(ValueError, match="exactly one calibration row"):
+        from experiments.run_primary import _calibration_row
+        _calibration_row(calibration, "B1", 0.05)
+
+
 def test_missing_calibration_metadata_is_rejected():
     config = tiny_config()
     calibration = calibrate_targets(config)
