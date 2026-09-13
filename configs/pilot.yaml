@@ -1,0 +1,31 @@
+experiment_name: pilot_pipeline_validation
+base_seed: 424242
+calibration_seeds:
+  - 1001
+  - 1002
+evaluation_seeds:
+  - 2001
+  - 2002
+  - 2003
+K: 2
+M: 5
+profiles:
+  reliable: 0.05
+  unreliable: 0.40
+  malicious: 0.80
+evidence_counts:
+  - 0
+  - 1
+  - 2
+  - 5
+alpha0: 1.0
+beta0: 1.0
+z: 1.0
+p_catch: 0.80
+target_haer: 0.05
+threshold_grid:
+  - 0.20
+  - 0.40
+  - 0.60
+  - 0.80
+output_file: results/pilot_results.json
