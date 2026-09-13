@@ -205,6 +205,39 @@ class TestMeasurementActions:
         for agent in population:
             assert len(agent["measurement_actions"]) == custom_count
 
+    def test_custom_population_dimensions_and_prior(self):
+        """Test custom population shape and explicit Beta prior."""
+        population = generate_population(
+            np.random.default_rng(42),
+            num_measurement_actions=3,
+            agents_per_cell=2,
+            evidence_counts=[0, 2],
+            profiles={"Custom": 0.25},
+            alpha0=2.0,
+            beta0=2.0,
+        )
+
+        assert len(population) == 4
+        assert {agent["profile"] for agent in population} == {"Custom"}
+        assert {agent["evidence_count"] for agent in population} == {0, 2}
+        assert all(len(agent["measurement_actions"]) == 3 for agent in population)
+        zero_evidence = next(agent for agent in population if agent["evidence_count"] == 0)
+        assert zero_evidence["alpha"] == 2.0
+        assert zero_evidence["beta"] == 2.0
+
+    def test_custom_population_rng_reproducibility(self):
+        kwargs = {
+            "num_measurement_actions": 3,
+            "agents_per_cell": 2,
+            "evidence_counts": [0, 2],
+            "profiles": {"Custom": 0.25},
+            "alpha0": 2.0,
+            "beta0": 2.0,
+        }
+        first = generate_population(np.random.default_rng(77), **kwargs)
+        second = generate_population(np.random.default_rng(77), **kwargs)
+        assert first == second
+
     def test_total_measurement_actions(self):
         """Test total measurement actions count."""
         rng = np.random.default_rng(42)
@@ -268,12 +301,10 @@ class TestInputValidation:
             generate_population(rng=42)
 
     def test_custom_action_count_zero(self):
-        """Test population with zero measurement actions."""
+        """Test that zero measurement actions are rejected."""
         rng = np.random.default_rng(42)
-        population = generate_population(rng, num_measurement_actions=0)
-        
-        for agent in population:
-            assert len(agent["measurement_actions"]) == 0
+        with pytest.raises(ValueError, match="greater than 0"):
+            generate_population(rng, num_measurement_actions=0)
 
     def test_custom_action_count_large(self):
         """Test population with large measurement action count."""

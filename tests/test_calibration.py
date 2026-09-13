@@ -478,3 +478,72 @@ class TestZParameter:
         # Both should be valid (they may or may not differ)
         assert 0.0 <= haer_z1 <= 1.0
         assert 0.0 <= haer_z2 <= 1.0
+
+
+class TestCallerProvidedRealizations:
+    """Test calibration against caller-owned populations and VERIFY streams."""
+
+    @staticmethod
+    def _population():
+        return [
+            {
+                "alpha": 9.0,
+                "beta": 1.0,
+                "measurement_actions": [True, False, True, False],
+            },
+            {
+                "alpha": 2.0,
+                "beta": 8.0,
+                "measurement_actions": [False, True, False, True],
+            },
+        ]
+
+    def test_calibration_accepts_caller_provided_realization(self):
+        thresholds = calibrate_thresholds(
+            method="B1",
+            target_haer=0.5,
+            theta_grid=[0.2, 0.8],
+            calibration_realizations=[
+                (self._population(), np.random.default_rng(123))
+            ],
+        )
+        assert thresholds == (0.2, 0.8)
+
+    def test_realization_path_does_not_create_hidden_rng(self, monkeypatch):
+        verify_rng = np.random.default_rng(123)
+
+        def fail_if_called(*args, **kwargs):
+            raise AssertionError("realization path created a hidden RNG")
+
+        monkeypatch.setattr("src.calibration.np.random.default_rng", fail_if_called)
+        result = _evaluate_threshold_pair(
+            method="B1",
+            theta_reject=0.2,
+            theta_verify=0.8,
+            calibration_seeds=None,
+            z=1.0,
+            p_catch=0.8,
+            calibration_realizations=[(self._population(), verify_rng)],
+        )
+        assert 0.0 <= result <= 1.0
+
+    def test_independent_rng_streams_are_reproducible(self):
+        first = calibrate_thresholds(
+            method="B2",
+            target_haer=0.5,
+            theta_grid=[0.2, 0.8],
+            z=1.0,
+            calibration_realizations=[
+                (self._population(), np.random.default_rng(991))
+            ],
+        )
+        second = calibrate_thresholds(
+            method="B2",
+            target_haer=0.5,
+            theta_grid=[0.2, 0.8],
+            z=1.0,
+            calibration_realizations=[
+                (self._population(), np.random.default_rng(991))
+            ],
+        )
+        assert first == second

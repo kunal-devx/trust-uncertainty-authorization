@@ -18,13 +18,17 @@ from src.authorization import authorize
 from src.verify_sim import verify_action
 
 
+CalibrationRealization = Tuple[List[Dict[str, Any]], np.random.Generator]
+
+
 def calibrate_thresholds(
     method: str,
     target_haer: float,
-    calibration_seeds: List[int],
+    calibration_seeds: Optional[List[int]] = None,
     theta_grid: Optional[List[float]] = None,
     z: float = 1.0,
     p_catch: float = 0.8,
+    calibration_realizations: Optional[List[CalibrationRealization]] = None,
 ) -> Tuple[float, float]:
     """
     Calibrate threshold pair to match target HAER.
@@ -52,10 +56,13 @@ def calibrate_thresholds(
     if target_haer < 0.0 or target_haer > 1.0:
         raise ValueError(f"target_haer must be in [0, 1], got {target_haer}")
 
-    if not isinstance(calibration_seeds, (list, tuple)):
-        raise TypeError(f"calibration_seeds must be list/tuple, got {type(calibration_seeds).__name__}")
-    if not calibration_seeds:
-        raise ValueError("calibration_seeds must not be empty")
+    if calibration_realizations is None:
+        if not isinstance(calibration_seeds, (list, tuple)):
+            raise TypeError(f"calibration_seeds must be list/tuple, got {type(calibration_seeds).__name__}")
+        if not calibration_seeds:
+            raise ValueError("calibration_seeds must not be empty")
+    elif not calibration_realizations:
+        raise ValueError("calibration_realizations must not be empty")
 
     if theta_grid is None:
         theta_grid = [i / 10.0 for i in range(1, 10)]  # 0.1 to 0.9
@@ -66,13 +73,15 @@ def calibrate_thresholds(
         for theta_verify in theta_grid
         if theta_reject < theta_verify
     ]
-    candidate_haers = _evaluate_threshold_pairs(
-        method=method,
-        threshold_pairs=candidate_pairs,
-        calibration_seeds=calibration_seeds,
-        z=z,
-        p_catch=p_catch,
-    )
+    evaluation_kwargs = {
+        "method": method,
+        "threshold_pairs": candidate_pairs,
+        "calibration_seeds": calibration_seeds,
+        "calibration_realizations": calibration_realizations,
+        "z": z,
+        "p_catch": p_catch,
+    }
+    candidate_haers = _evaluate_threshold_pairs(**evaluation_kwargs)
 
     if not candidate_haers:
         raise ValueError("No valid threshold pairs found with theta_reject < theta_verify")
@@ -90,9 +99,10 @@ def _evaluate_threshold_pair(
     method: str,
     theta_reject: float,
     theta_verify: float,
-    calibration_seeds: List[int],
+    calibration_seeds: Optional[List[int]],
     z: float,
     p_catch: float,
+    calibration_realizations: Optional[List[CalibrationRealization]] = None,
 ) -> float:
     """
     Evaluate a threshold pair on calibration seeds.
@@ -106,6 +116,7 @@ def _evaluate_threshold_pair(
         calibration_seeds: List of RNG seeds
         z: Confidence level for B2
         p_catch: VERIFY catch probability
+        calibration_realizations: Optional caller-provided population/RNG pairs
 
     Returns:
         HAER value [0, 1]
@@ -114,6 +125,7 @@ def _evaluate_threshold_pair(
         method=method,
         threshold_pairs=[(theta_reject, theta_verify)],
         calibration_seeds=calibration_seeds,
+        calibration_realizations=calibration_realizations,
         z=z,
         p_catch=p_catch,
     )
@@ -123,24 +135,38 @@ def _evaluate_threshold_pair(
 def _evaluate_threshold_pairs(
     method: str,
     threshold_pairs: List[Tuple[float, float]],
-    calibration_seeds: List[int],
+    calibration_seeds: Optional[List[int]],
     z: float,
     p_catch: float,
+    calibration_realizations: Optional[List[CalibrationRealization]] = None,
 ) -> Dict[Tuple[float, float], float]:
     """Evaluate all candidate pairs using shared calibration realizations."""
     if method not in ("B1", "B2"):
         raise ValueError(f"Unknown method: {method}")
-    if not calibration_seeds:
-        raise ValueError("calibration_seeds must not be empty")
+    if calibration_realizations is None:
+        if not calibration_seeds:
+            raise ValueError("calibration_seeds must not be empty")
+        # Legacy compatibility path. New callers should provide realizations.
+        realizations = [
+            (
+                generate_population(np.random.default_rng(seed)),
+                np.random.default_rng(seed + 10000),
+            )
+            for seed in calibration_seeds
+        ]
+    else:
+        if not calibration_realizations:
+            raise ValueError("calibration_realizations must not be empty")
+        realizations = calibration_realizations
     if not isinstance(p_catch, (int, float)):
         raise TypeError(f"p_catch must be numeric, got {type(p_catch).__name__}")
     if p_catch < 0.0 or p_catch > 1.0:
         raise ValueError(f"p_catch must be in [0, 1], got {p_catch}")
 
     totals = {pair: [0, 0] for pair in threshold_pairs}
-    for seed in calibration_seeds:
-        population = generate_population(np.random.default_rng(seed))
-        verify_rng = np.random.default_rng(seed + 10000)
+    for population, verify_rng in realizations:
+        if not isinstance(verify_rng, np.random.Generator):
+            raise TypeError("calibration realization verify RNG must be np.random.Generator")
 
         for agent in population:
             alpha = agent["alpha"]

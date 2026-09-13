@@ -13,7 +13,7 @@ Population is reproducible and supports paired evaluation design.
 Uses explicitly supplied NumPy Generator; no global RNG state.
 """
 
-from typing import List, Dict, Any, Tuple
+from typing import List, Dict, Any, Tuple, Mapping
 import numpy as np
 
 
@@ -37,6 +37,11 @@ BETA0 = 1.0
 def generate_population(
     rng: np.random.Generator,
     num_measurement_actions: int = MEASUREMENT_ACTIONS_PER_AGENT,
+    agents_per_cell: int = AGENTS_PER_CELL,
+    evidence_counts: List[int] = None,
+    profiles: Mapping[str, float] = None,
+    alpha0: float = ALPHA0,
+    beta0: float = BETA0,
 ) -> List[Dict[str, Any]]:
     """
     Generate evaluation population with controlled structure.
@@ -44,6 +49,11 @@ def generate_population(
     Args:
         rng: NumPy Generator for reproducibility.
         num_measurement_actions: Actions per agent (default 50).
+            agents_per_cell: Agents per profile/evidence cell (default: AGENTS_PER_CELL).
+            evidence_counts: Evidence levels (default: EVIDENCE_COUNTS).
+            profiles: Mapping of profile names to harmful probabilities (default: PROFILES).
+            alpha0: Beta prior alpha parameter (default: ALPHA0).
+            beta0: Beta prior beta parameter (default: BETA0).
 
     Returns:
         List of agent dictionaries with:
@@ -60,12 +70,46 @@ def generate_population(
     if not isinstance(rng, np.random.Generator):
         raise TypeError(f"rng must be np.random.Generator, got {type(rng).__name__}")
 
+    if isinstance(num_measurement_actions, bool) or not isinstance(num_measurement_actions, int):
+        raise TypeError("num_measurement_actions must be a positive integer")
+    if num_measurement_actions <= 0:
+        raise ValueError("num_measurement_actions must be greater than 0")
+    if isinstance(agents_per_cell, bool) or not isinstance(agents_per_cell, int):
+        raise TypeError("agents_per_cell must be a positive integer")
+    if agents_per_cell <= 0:
+        raise ValueError("agents_per_cell must be greater than 0")
+
+    if evidence_counts is None:
+        evidence_counts = EVIDENCE_COUNTS
+    if not isinstance(evidence_counts, (list, tuple)) or not evidence_counts:
+        raise ValueError("evidence_counts must be a non-empty sequence")
+    if any(isinstance(count, bool) or not isinstance(count, int) or count < 0 for count in evidence_counts):
+        raise ValueError("evidence_counts must contain non-negative integers")
+
+    if profiles is None:
+        profiles = PROFILES
+    if not isinstance(profiles, Mapping) or not profiles:
+        raise ValueError("profiles must be a non-empty mapping")
+    if any(
+        not isinstance(name, str)
+        or not isinstance(probability, (int, float))
+        or probability < 0.0
+        or probability > 1.0
+        for name, probability in profiles.items()
+    ):
+        raise ValueError("profiles must map names to probabilities in [0, 1]")
+
+    if not isinstance(alpha0, (int, float)) or alpha0 <= 0:
+        raise ValueError("alpha0 must be greater than 0")
+    if not isinstance(beta0, (int, float)) or beta0 <= 0:
+        raise ValueError("beta0 must be greater than 0")
+
     population = []
     agent_id = 0
 
-    for profile_name, harmful_prob in PROFILES.items():
-        for evidence_count in EVIDENCE_COUNTS:
-            for _ in range(AGENTS_PER_CELL):
+    for profile_name, harmful_prob in profiles.items():
+        for evidence_count in evidence_counts:
+            for _ in range(agents_per_cell):
                 # Generate pre-observation counts
                 # Consistent with the profile's harmful probability
                 benign_count, harmful_count = _generate_evidence_counts(
@@ -75,8 +119,8 @@ def generate_population(
                 )
 
                 # Calculate trust parameters
-                alpha = ALPHA0 + benign_count
-                beta = BETA0 + harmful_count
+                alpha = alpha0 + benign_count
+                beta = beta0 + harmful_count
 
                 # Generate measurement actions
                 measurement_actions = [
