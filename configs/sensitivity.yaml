@@ -1,0 +1,110 @@
+experiment_name: primary_robustness_sensitivity
+baseline:
+  alpha0: 1.0
+  beta0: 1.0
+  z: 1.0
+  p_catch: 0.80
+  threshold_step: 0.05
+sensitivity_conditions:
+  - id: prior_beta_2_2
+    factor: prior
+    alpha0: 2.0
+    beta0: 2.0
+    z: 1.0
+    p_catch: 0.80
+    threshold_step: 0.05
+  - id: z_0_5
+    factor: z
+    alpha0: 1.0
+    beta0: 1.0
+    z: 0.5
+    p_catch: 0.80
+    threshold_step: 0.05
+  - id: z_1_5
+    factor: z
+    alpha0: 1.0
+    beta0: 1.0
+    z: 1.5
+    p_catch: 0.80
+    threshold_step: 0.05
+  - id: p_catch_0_6
+    factor: p_catch
+    alpha0: 1.0
+    beta0: 1.0
+    z: 1.0
+    p_catch: 0.60
+    threshold_step: 0.05
+  - id: p_catch_0_95
+    factor: p_catch
+    alpha0: 1.0
+    beta0: 1.0
+    z: 1.0
+    p_catch: 0.95
+    threshold_step: 0.05
+  - id: threshold_step_0_025
+    factor: threshold_grid
+    alpha0: 1.0
+    beta0: 1.0
+    z: 1.0
+    p_catch: 0.80
+    threshold_step: 0.025
+K: 30
+M: 50
+profiles:
+  reliable: 0.05
+  unreliable: 0.40
+  malicious: 0.80
+evidence_counts:
+  - 0
+  - 1
+  - 2
+  - 3
+  - 5
+  - 8
+  - 12
+  - 20
+  - 40
+  - 100
+calibration_seeds:
+  - 10001
+  - 10002
+  - 10003
+  - 10004
+  - 10005
+  - 10006
+  - 10007
+  - 10008
+  - 10009
+  - 10010
+evaluation_seeds:
+  - 20001
+  - 20002
+  - 20003
+  - 20004
+  - 20005
+  - 20006
+  - 20007
+  - 20008
+  - 20009
+  - 20010
+  - 20011
+  - 20012
+  - 20013
+  - 20014
+  - 20015
+  - 20016
+  - 20017
+  - 20018
+  - 20019
+  - 20020
+target_haer_grid:
+  - 0.01
+  - 0.02
+  - 0.03
+  - 0.05
+  - 0.08
+  - 0.10
+  - 0.15
+statistical_unit: seed
+inference_performed: false
+output_directory: results/sensitivity
