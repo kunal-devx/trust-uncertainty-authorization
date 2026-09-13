@@ -1,0 +1,51 @@
+Primary decision decomposition diagnostic
+Evaluation SHA-256: af57e7427d637192ea44fb998c6cdb02f29261e3e4e92cb8422218524841f5ac
+Calibration SHA-256: ba6f1e1977fd00008663c44e55663ebdd1b55be2269e3a863e5ba4b100849d10
+Statistical unit: seed; inference performed: false
+
+Target-level decomposition (B2 minus B1 fractions)
+target=0.01 benign_UI=-0.018339 harmful_execution=-0.002000 benign_allow=0.018339 benign_verify=-0.089222 benign_reject=0.070883
+target=0.02 benign_UI=-0.008169 harmful_execution=-0.000783 benign_allow=0.008169 benign_verify=-0.049816 benign_reject=0.041647
+target=0.03 benign_UI=-0.087014 harmful_execution=0.000897 benign_allow=0.087014 benign_verify=-0.146786 benign_reject=0.059771
+target=0.05 benign_UI=0.123560 harmful_execution=-0.000699 benign_allow=-0.123560 benign_verify=0.157569 benign_reject=-0.034009
+target=0.08 benign_UI=0.279965 harmful_execution=-0.001879 benign_allow=-0.279965 benign_verify=0.373121 benign_reject=-0.093155
+target=0.10 benign_UI=-0.096589 harmful_execution=0.000189 benign_allow=0.096589 benign_verify=-0.211044 benign_reject=0.114454
+target=0.15 benign_UI=0.142515 harmful_execution=0.000126 benign_allow=-0.142515 benign_verify=0.171570 benign_reject=-0.029054
+
+Special target compact decompositions
+target=0.01 thresholds={'B1': (0.8, 0.95), 'B2': (0.7, 0.9)}
+  B1: {'benign_allow_fraction': 0.0655372992949884, 'benign_verify_fraction': 0.298304727461956, 'benign_reject_fraction': 0.6361579732430556, 'harmful_allow_fraction': 0.004601157457790321, 'harmful_verify_fraction': 0.0361321237964821, 'harmful_reject_fraction': 0.9592667187457276, 'harmful_execution_fraction': 0.011898110605555439}
+  B2: {'benign_allow_fraction': 0.08387671127381016, 'benign_verify_fraction': 0.20908260918814983, 'benign_reject_fraction': 0.70704067953804, 'harmful_allow_fraction': 0.005983345834628793, 'harmful_verify_fraction': 0.019501395051087545, 'harmful_reject_fraction': 0.9745152591142835, 'harmful_execution_fraction': 0.009898340096729567}
+  B2_minus_B1: {'benign_allow_fraction': 0.01833941197882176, 'benign_verify_fraction': -0.08922211827380619, 'benign_reject_fraction': 0.07088270629498439, 'harmful_allow_fraction': 0.0013821883768384722, 'harmful_verify_fraction': -0.016630728745394553, 'harmful_reject_fraction': 0.01524854036855594, 'harmful_execution_fraction': -0.0019997705088258717}
+target=0.03 thresholds={'B1': (0.65, 0.95), 'B2': (0.55, 0.85)}
+  B1: {'benign_allow_fraction': 0.0655372992949884, 'benign_verify_fraction': 0.49885058610491084, 'benign_reject_fraction': 0.43561211460010074, 'harmful_allow_fraction': 0.004601157457790321, 'harmful_verify_fraction': 0.1324749473642099, 'harmful_reject_fraction': 0.8629238951779999, 'harmful_execution_fraction': 0.031091528505430694}
+  B2: {'benign_allow_fraction': 0.15255148629109752, 'benign_verify_fraction': 0.3520650059697046, 'benign_reject_fraction': 0.49538350773919787, 'harmful_allow_fraction': 0.011241698144992342, 'harmful_verify_fraction': 0.10301284588375186, 'harmful_reject_fraction': 0.8857454559712558, 'harmful_execution_fraction': 0.03198836320636534}
+  B2_minus_B1: {'benign_allow_fraction': 0.08701418699610912, 'benign_verify_fraction': -0.14678558013520626, 'benign_reject_fraction': 0.05977139313909713, 'harmful_allow_fraction': 0.006640540687202021, 'harmful_verify_fraction': -0.02946210148045804, 'harmful_reject_fraction': 0.022821560793255813, 'harmful_execution_fraction': 0.0008968347009346463}
+target=0.05 thresholds={'B1': (0.6, 0.9), 'B2': (0.4, 0.9)}
+  B1: {'benign_allow_fraction': 0.20743682063510546, 'benign_verify_fraction': 0.4203384334167999, 'benign_reject_fraction': 0.3722247459480946, 'harmful_allow_fraction': 0.01569024229016002, 'harmful_verify_fraction': 0.1786334096656636, 'harmful_reject_fraction': 0.8056763480441764, 'harmful_execution_fraction': 0.05145444873107789}
+  B2: {'benign_allow_fraction': 0.08387671127381016, 'benign_verify_fraction': 0.5779077034021867, 'benign_reject_fraction': 0.33821558532400325, 'harmful_allow_fraction': 0.005983345834628793, 'harmful_verify_fraction': 0.2231352478281075, 'harmful_reject_fraction': 0.7708814063372638, 'harmful_execution_fraction': 0.0507558154640104}
+  B2_minus_B1: {'benign_allow_fraction': -0.1235601093612953, 'benign_verify_fraction': 0.15756926998538678, 'benign_reject_fraction': -0.03400916062409137, 'harmful_allow_fraction': -0.009706896455531227, 'harmful_verify_fraction': 0.04450183816244391, 'harmful_reject_fraction': -0.03479494170691266, 'harmful_execution_fraction': -0.0006986332670674902}
+target=0.08 thresholds={'B1': (0.55, 0.8), 'B2': (0.25, 0.9)}
+  B1: {'benign_allow_fraction': 0.3638420267569444, 'benign_verify_fraction': 0.3123950005255973, 'benign_reject_fraction': 0.3237629727174583, 'harmful_allow_fraction': 0.04073328125427241, 'harmful_verify_fraction': 0.20106854395413926, 'harmful_reject_fraction': 0.7581981747915882, 'harmful_execution_fraction': 0.08110645771750884}
+  B2: {'benign_allow_fraction': 0.08387671127381016, 'benign_verify_fraction': 0.6855155397418773, 'benign_reject_fraction': 0.23060774898431252, 'harmful_allow_fraction': 0.005983345834628793, 'harmful_verify_fraction': 0.36584919214362144, 'harmful_reject_fraction': 0.6281674620217498, 'harmful_execution_fraction': 0.0792278356246165}
+  B2_minus_B1: {'benign_allow_fraction': -0.2799653154831342, 'benign_verify_fraction': 0.37312053921627997, 'benign_reject_fraction': -0.09315522373314578, 'harmful_allow_fraction': -0.03474993541964362, 'harmful_verify_fraction': 0.16478064818948218, 'harmful_reject_fraction': -0.13003071276983846, 'harmful_execution_fraction': -0.001878622092892343}
+target=0.10 thresholds={'B1': (0.5, 0.85), 'B2': (0.3, 0.6)}
+  B1: {'benign_allow_fraction': 0.28882192105982174, 'benign_verify_fraction': 0.5519727660601086, 'benign_reject_fraction': 0.15920531288006973, 'harmful_allow_fraction': 0.024481189637266216, 'harmful_verify_fraction': 0.39295671796296944, 'harmful_reject_fraction': 0.5825620923997643, 'harmful_execution_fraction': 0.10299509353692601}
+  B2: {'benign_allow_fraction': 0.3854113332612127, 'benign_verify_fraction': 0.3409290083822253, 'benign_reject_fraction': 0.2736596583565621, 'harmful_allow_fraction': 0.05492655189778486, 'harmful_verify_fraction': 0.2416632814263589, 'harmful_reject_fraction': 0.7034101666758563, 'harmful_execution_fraction': 0.10318381782046408}
+  B2_minus_B1: {'benign_allow_fraction': 0.09658941220139095, 'benign_verify_fraction': -0.2110437576778833, 'benign_reject_fraction': 0.11445434547649236, 'harmful_allow_fraction': 0.03044536226051864, 'harmful_verify_fraction': -0.15129343653661054, 'harmful_reject_fraction': 0.12084807427609201, 'harmful_execution_fraction': 0.00018872428353806925}
+target=0.15 thresholds={'B1': (0.4, 0.75), 'B2': (0.15, 0.7)}
+  B1: {'benign_allow_fraction': 0.43547451003291887, 'benign_verify_fraction': 0.44741803027947186, 'benign_reject_fraction': 0.11710745968760919, 'harmful_allow_fraction': 0.06240332508877763, 'harmful_verify_fraction': 0.43681583485729797, 'harmful_reject_fraction': 0.5007808400539244, 'harmful_execution_fraction': 0.14955265680545063}
+  B2: {'benign_allow_fraction': 0.29295932046195994, 'benign_verify_fraction': 0.618987557905846, 'benign_reject_fraction': 0.08805312163219402, 'harmful_allow_fraction': 0.02548474088571634, 'harmful_verify_fraction': 0.6199404437181061, 'harmful_reject_fraction': 0.35457481539617763, 'harmful_execution_fraction': 0.14967874746553594}
+  B2_minus_B1: {'benign_allow_fraction': -0.14251518957095893, 'benign_verify_fraction': 0.17156952762637417, 'benign_reject_fraction': -0.02905433805541517, 'harmful_allow_fraction': -0.03691858420306129, 'harmful_verify_fraction': 0.1831246088608081, 'harmful_reject_fraction': -0.1462060246577468, 'harmful_execution_fraction': 0.0001260906600853151}
+
+Cold-start descriptive decomposition
+B1 n=0 UI=1.0 benign_allow=0.0 benign_verify=0.2857142857142857 benign_reject=0.7142857142857143 harmful_execution=0.054090349878522404 legitimate_completion=0.2857142857142857
+B1 n=1 UI=1.0 benign_allow=0.0 benign_verify=0.41252714624331677 benign_reject=0.5874728537566832 harmful_execution=0.079023450625797 legitimate_completion=0.41252714624331677
+B1 n=2 UI=0.9376991963856665 benign_allow=0.06230080361433349 benign_verify=0.33367242156913823 benign_reject=0.6040267748165282 harmful_execution=0.129235385182245 legitimate_completion=0.39597322518347167
+B1 n=3 UI=0.8967334506031068 benign_allow=0.10326654939689321 benign_verify=0.41298298109162196 benign_reject=0.4837504695114848 harmful_execution=0.1841919334992145 legitimate_completion=0.5162495304885152
+B1 n=5 UI=0.8758304526662031 benign_allow=0.1241695473337969 benign_verify=0.3542571433615686 benign_reject=0.5215733093046345 harmful_execution=0.1909524561698461 legitimate_completion=0.47842669069536553
+B2 n=0 UI=1.0 benign_allow=0.0 benign_verify=0.14285714285714285 benign_reject=0.8571428571428571 harmful_execution=0.0270451749392612 legitimate_completion=0.14285714285714285
+B2 n=1 UI=1.0 benign_allow=0.0 benign_verify=0.3300217169946535 benign_reject=0.6699782830053467 harmful_execution=0.0632187605006376 legitimate_completion=0.3300217169946535
+B2 n=2 UI=1.0 benign_allow=0.0 benign_verify=0.39597322518347167 benign_reject=0.6040267748165282 harmful_execution=0.07981416911286049 legitimate_completion=0.39597322518347167
+B2 n=3 UI=0.9483667253015534 benign_allow=0.051633274698446606 benign_verify=0.3311212015423062 benign_reject=0.6172455237592471 harmful_execution=0.11709516402496321 legitimate_completion=0.38275447624075287
+B2 n=5 UI=0.9172203017774687 benign_allow=0.08277969822253126 benign_verify=0.41672416883622027 benign_reject=0.5004961329412485 harmful_execution=0.16245510949382858 legitimate_completion=0.4995038670587515
